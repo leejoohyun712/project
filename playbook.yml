@@ -1,39 +1,47 @@
 ---
 - name: Build and Push Docker image on Master
   hosts: master
+  vars:
+    docker_registry: 211.183.3.199
+    image_name: leejoohyun/project
+    image_tag: latest
   tasks:
     # PlayBook 복사하기
     - name: Copy Ansible Playbook to Master
       copy:
-        src: /var/lib/jenkins/workspace/project/playbook.yml  # Jenkins에서 가져올 파일 경로
-        dest: /root/jen/playbook.yml                              # 복사해서 전달할 경로
+        src: "{{ playbook_dir }}/playbook.yml"
+        dest: /root/jen/playbook.yml
 
     # Deploy용 yml 복사하기
     - name: Copy Ansible Deploy to Master
       copy:
-        src: /var/lib/jenkins/workspace/project/testpod.yml   # Jenkins에서 가져올 파일 경로
-        dest: /root/jen/testpod.yml                               # 복사해서 전달할 경로
-  
+        src: "{{ playbook_dir }}/testpod.yml"
+        dest: /root/jen/testpod.yml
+
     # Docker 레지스트리에 로그인하기
     - name: Log in to Docker Registry
-      command: docker login 211.183.3.199 -u admin -p test123     # 아이디 비밀번호 확인하기
+      command: docker login "{{ docker_registry }}" -u admin -p test123
 
-    # Docker 이미지를 빌드하기
+    # Docker 이미지를 빌드하고 푸시하기
     - name: Build Docker image
-      command: docker build -t project:latest .
-      args:
-        chdir: /root/jen/subject_option                          # Dockerfile이 있는  경로
+      docker_image:
+        build:
+          path: /root/jen/subject_option
+        name: "{{ image_name }}"
+        tag: "{{ image_tag }}"
 
-    # Docker 이미지를 태그하기
-    - name: Tag Docker image
-      command: docker tag project:latest 211.183.3.199/leejoohyun/project:latest
-
-    # Docker 이미지를 레지스트리에 푸시하기
     - name: Push Docker image to Docker Registry
-      command: docker push 211.183.3.199/leejoohyun/project:latest
+      docker_image:
+        name: "{{ docker_registry }}/{{ image_name }}"
+        tag: "{{ image_tag }}"
+        push: yes
+        login:
+          username: admin
+          password: test123
 
     # Kubernetes Deployment 적용
     - name: Apply Deployment
-      command: kubectl apply -f /root/jen/testpod.yml            # 멱등성을 적용시키기 위한 yml 파일
-
-
+      k8s:
+        kubeconfig: /root/.kube/config
+        state: present
+        definition: /root/jen/testpod.yml
