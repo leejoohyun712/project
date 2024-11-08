@@ -22,7 +22,7 @@
     - name: Log in to Docker Registry
       command: docker login "{{ docker_registry }}" -u admin -p test123
 
-    # Docker 이미지를 빌드하고 푸시하기
+    # Docker 이미지를 빌드하고 푸시하기 
     - name: Build Docker image
       docker_image:
         build:
