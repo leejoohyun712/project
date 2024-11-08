@@ -16,7 +16,7 @@
   
     # Docker 레지스트리에 로그인하기
     - name: Log in to Docker Registry
-      command: docker login -u leejoohyun -p aa0712&0201     # 아이디 비밀번호 확인하기
+      command: docker login 211.183.3.199 -u admin -p test123     # 아이디 비밀번호 확인하기
 
     # Docker 이미지를 빌드하기
     - name: Build Docker image
@@ -24,12 +24,16 @@
       args:
         chdir: /root/jen/subject_option                           # Dockerfile이 있는  경로
 
+    # Docker 이미지를 태그하기
+    - name: Tag Docker image
+      command: docker tag project:latest 211.183.3.199/leejoohyun/project:latest
+
     # Docker 이미지를 레지스트리에 푸시하기
     - name: Push Docker image to Docker Registry
-      command: docker push leejoohyun/project:latest
+      command: docker push 211.183.3.199/leejoohyun/project:latest
 
     # Kubernetes Deployment 적용
     - name: Apply Deployment
-      command: kubectl apply -f /root/jen/testpod.yml          # 멱등성을 적용시키기 위한 yml 파일
+      command: kubectl apply -f /root/jen/testpod.yml            # 멱등성을 적용시키기 위한 yml 파일
 
 
