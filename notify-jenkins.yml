@@ -11,4 +11,4 @@ jobs:
     steps:
       - name: Send payload to Jenkins
         run: |
-          curl -X POST -H "Content-Type: application/json" https://ed46-218-146-17-197.ngrok-free.app/github-webhook/
+          curl -X POST -H "Content-Type: application/json" https://27f3-218-146-17-197.ngrok-free.app/github-webhook/
