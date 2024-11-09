@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: juhyun
+spec:
+  replicas: 5  # 복제본 2개
+  selector:
+    matchLabels:
+      app: juhyun
+  template:
+    metadata:
+      labels:
+        app: juhyun
+    spec:
+      containers:
+      - name: juhyun-web
+        image: 211.183.3.198/juhyun/lee:0913
+        ports:
+        - containerPort: 80
+      imagePullSecrets:
+      - name: regcred
+
+#로드 밸런서 작성하기
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: juhyun-svc
+spec:
+  selector:
+    app: juhyun
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
+  type: LoadBalancer
