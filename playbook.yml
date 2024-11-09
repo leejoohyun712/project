@@ -1,0 +1,43 @@
+#playbook.yml
+---
+- name: Build and Push Docker image on Master
+  hosts: master
+  tasks:
+      # PlayBook 복사하기
+    - name: Copy Ansible Playbook to Master
+      copy:
+        src: /var/lib/jenkins/workspace/project/playbook.yml  # Jenkins에서 뽑아올 경로
+        dest: /root/jen/playbook.yml #복사해서 들어갈 경로
+      # Deploy용 yml 복사하기
+    - name: Copy Ansible Deploy to Master
+      copy:
+        src: /var/lib/jenkins/workspace/project/testpod.yml  # Jenkins에서 뽑아올 경로
+        dest: /root/jen/testpod.yml #복사해서 들어갈 경로
+  
+    - name: Log in to Docker Hub #이부분은 나중에 env로 해줘야함
+      command: docker login -u leejoohyun -p aa0712&0201  #아이디 비밀번호 확인하기
+      
+   # 하버 구축 완료하면 로그인 방법을 이걸로 바꾸어 주기 (하버로그인)   
+   #- name: Log in to Docker Hub #이부분은 나중에 env로 해줘야함
+   #  command: sudo docker login https://211.183.3.105 -u admin -p Harbor12345
+
+    - name: Build Docker image
+      command: docker build -t pshhhhh98/subject:jenkins .
+      # 하버 구축 완료하면 빌드 방법을 밑처럼 바꾸어주기 (하버용 이미지 빌드)
+      #command: docker build -t subject:harbor .
+      args:
+        chdir: /root/jen/subject_option  # Dockerfile이 있는 경로
+      
+   # 하버 구축 완료하면 밑의 주석을 풀어주기 (하버용 태그 만들기)
+   #- name: Tag Harbor Docker image # 하버에 올라갈 이미지 태그하기
+   #  command: docker tag subject:harbor 211.183.3.105/subject_harbor/subject:harbor 
+
+    - name: Push Docker image to Docker Hub
+      command: docker push pshhhhh98/subject:jenkins
+      #하버 구축 완료하면 push code를 밑으로 바꾸기 (하버에 푸시)
+      #command: docker push 211.183.3.105/subject_harbor/subject:harbor 
+
+# 직접 명령어로 배포하니까, 기존의 배포 pod의 멱등성이 깨짐, 따로 yml파일을 만들어서 apply하기
+# 당연하게도 밑에 들어갈 경로는 masterNode에서 사용하는거임!! JenkinsNode가 아님!!    
+    - name: Apply Deployment                                                            
+      command: kubectl apply -f /root/jen/testpod.yml
