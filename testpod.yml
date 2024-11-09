@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: juhyun-web
-        image: 211.183.3.198/juhyun/lee:0913
+        image: 211.183.3.198/project/lee:0913
         ports:
         - containerPort: 80
       imagePullSecrets:
