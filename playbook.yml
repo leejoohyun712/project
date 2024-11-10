@@ -34,4 +34,4 @@
 
     # Kubernetes Deployment 적용
     - name: Apply Deployment
-      command: kubectl apply -f /root/jen/testpod.yml            # 멱등성을 적용시키기 위한 yml 파일
+      command: kubectl apply -f /root/jen/testpod.yml             # 멱등성을 적용시키기 위한 yml 파일
