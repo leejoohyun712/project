@@ -1,4 +1,3 @@
-#playbook.yml
 ---
 - name: Build and Push Docker image on Master
   hosts: master
@@ -6,8 +5,8 @@
     # PlayBook 복사하기
     - name: Copy Ansible Playbook to Master
       copy:
-        src: /var/lib/jenkins/workspace/project/playbook.yml  # Jenkins에서 가져올 파일 경로
-        dest: /root/jen/playbook.yml                              # 복사해서 전달할 경로
+        src: /var/lib/jenkins/workspace/project/playbook.yml # Jenkins에서 가져올 파일 경로
+        dest: /root/jen/playbook.yml                         # 복사해서 전달할 경로
 
     # Deploy용 yml 복사하기
     - name: Copy Ansible Deploy to Master

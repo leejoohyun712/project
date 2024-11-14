@@ -1,5 +1,3 @@
-#notify-jenkins.yml 
-
 name: Notify Jenkins on Push
 
 on:
