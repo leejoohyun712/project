@@ -26,11 +26,11 @@
 
     # Docker 이미지를 태그하기
     - name: Tag Docker image
-      command: docker tag juhyun:0913 211.183.3.198/project/test:1
+      command: docker tag juhyun:0913 211.183.3.198/project/lee:2024
 
     # Docker 이미지를 레지스트리에 푸시하기
     - name: Push Docker image to Docker Registry
-      command: docker push 211.183.3.198/project/test:1
+      command: docker push 211.183.3.198/project/lee:2024
 
     # Kubernetes Deployment 적용
     - name: Apply Deployment
